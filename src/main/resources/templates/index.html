@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>COVID-19 疫情可视化面板</title>
+    <link th:href="@{/css/custom.less}" type="text/css" rel="stylesheet/less"/>
+    <script th:src="@{/js/less.min.js}"></script>
+
+</head>
+<body>
+<div class="wrapper">
+    <main id="left">
+        <header>全国确诊Top5</header>
+        <div id="confirmedTopN" style="height: 310px;width: 300px"></div>
+        <header>全国治愈Top5</header>
+        <div id="curedTopN" style="height: 300px;width: 300px"></div>
+
+    </main>
+    <main id="center">
+        <header>
+            <div>疫情可视化面板</div>
+        </header>
+        <div id="main" style="width: 600px;height: 660px"></div>
+    </main>
+    <main id="right">
+        <header>全国疑似Top5</header>
+        <div id="suspectedTopN" style="width: 300px;height: 310px"></div>
+        <header id="compare">全国Top5确诊/疑似/死亡/治愈对比</header>
+        <div id="compareTopN" style="width: 300px;height: 290px"></div>
+    </main>
+</div>
+
+<footer>
+    <div id="overall" style="height: 220px;width: 1100px"></div>
+</footer>
+
+<script th:src="@{/js/jquery-3.6.0.min.js}"></script>
+<script th:src="@{/echarts/echarts.js}"></script>
+<script th:src="@{/js/charts.js}"></script>
+<script>
+    mainChart('main');
+    confirmedTopN('confirmedTopN', 5);
+    curedTopN('curedTopN', 5);
+    suspectedTopN('suspectedTopN', 5);
+    compareTopN('compareTopN');
+    countryConfirmedOverall('overall')
+</script>
+</body>
+</html>

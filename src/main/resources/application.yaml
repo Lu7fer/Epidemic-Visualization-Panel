@@ -1,0 +1,26 @@
+spring:
+  thymeleaf:
+    mode: HTML
+    cache: false
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: Rootasdf
+    url: jdbc:mysql://localhost:3306/covid19_data?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=Asia/Shanghai
+  banner:
+    image:
+      location: covid-19.png
+server:
+  http2:
+    enabled: on
+  address: 0.0.0.0
+  port: 8080
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: off
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*Mapper.xml
+  type-aliases-package: cf.vbnm.model.*
+  global-config:
+    banner: off

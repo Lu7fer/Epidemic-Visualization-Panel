@@ -1,0 +1,108 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cf.vbnm.covidchina.mapper.DXYAreaMapper">
+    <select id="getRecentProvinceData" resultType="cf.vbnm.covidchina.model.ProvinceConfirmedData">
+        SELECT DISTINCT provinceName, province_zipCode, province_confirmedCount, updateTime
+        FROM covid_area_data
+        WHERE NOT provinceName = '中国'
+          and not provinceName = '香港特别行政区'
+        GROUP BY provinceName
+    </select>
+    <select id="getRecentCityData" resultType="cf.vbnm.covidchina.model.CityConfirmedData">
+        SELECT DISTINCT
+        <if test="adcode > 700000">
+            provinceName,province_zipCode,province_confirmedCount,
+        </if>
+        <if test="adcode &lt;= 700000">
+            cityName, city_zipCode, city_confirmedCount,
+        </if>
+        updateTime
+        FROM covid_area_data
+        WHERE province_zipCode = #{adcode}
+        GROUP BY cityName
+    </select>
+    <select id="provinceTopN" resultType="cf.vbnm.covidchina.model.ProvinceTopNData">
+        SELECT DISTINCT provinceName,
+                        province_zipCode,
+                        province_confirmedCount,
+                        province_suspectedCount,
+                        province_curedCount,
+                        province_deadCount,
+                        updateTime
+        FROM covid_area_data
+        WHERE NOT provinceName = '中国'
+          AND NOT provinceName = '香港特别行政区'
+        GROUP BY provinceName
+        ORDER BY province_confirmedCount DESC
+        LIMIT #{n}
+    </select>
+
+    <select id="provinceCuredTopNAndDead" resultType="cf.vbnm.covidchina.model.ProvinceCuredAndDeadTopNData">
+        SELECT DISTINCT provinceName,
+                        province_zipCode,
+                        province_confirmedCount,
+                        province_curedCount,
+                        province_deadCount,
+                        updateTime
+        FROM covid_area_data
+        WHERE NOT provinceName = '中国'
+          AND NOT provinceName = '香港特别行政区'
+        GROUP BY provinceName
+        ORDER BY province_curedCount DESC
+        LIMIT #{n}
+    </select>
+    <select id="provinceSuspectedTopN" resultType="cf.vbnm.covidchina.model.ProvinceSuspectedTopNData">
+        SELECT DISTINCT provinceName,
+                        province_zipCode,
+                        province_suspectedCount,
+                        updateTime
+        FROM covid_area_data
+        WHERE NOT provinceName = '中国'
+          AND NOT provinceName = '香港特别行政区'
+        GROUP BY provinceName
+        ORDER BY province_suspectedCount DESC
+        LIMIT #{n}
+    </select>
+
+    <select id="provinceCompareTopN" resultType="cf.vbnm.covidchina.model.ProvinceCompareTopNData">
+        SELECT DISTINCT provinceName,
+                        province_zipCode,
+                        province_confirmedCount,
+                        province_suspectedCount,
+                        province_curedCount,
+                        province_deadCount,
+                        updateTime
+        FROM covid_area_data
+        WHERE NOT provinceName = '中国'
+          AND NOT provinceName = '香港特别行政区'
+          and not provinceName = '台湾省'
+        GROUP BY provinceName
+        ORDER BY province_confirmedCount DESC
+        LIMIT #{n}
+    </select>
+    <select id="countryOverall" resultType="cf.vbnm.covidchina.model.CountryOverallData">
+        select distinct province_confirmedCount, updateTime
+        from covid_area_data
+        where provinceName = '中国'
+        order by updateTime
+    </select>
+    <insert id="insertOne" parameterType="cf.vbnm.covidchina.model.DXYAreaData">
+
+
+        insert into covid_area_data(provinceName, provinceEnglishName, province_zipCode, province_confirmedCount,
+                                    province_suspectedCount, province_curedCount, province_deadCount, cityName,
+                                    cityEnglishName, city_zipCode, city_confirmedCount, city_suspectedCount,
+                                    city_curedCount, city_deadCount, updateTime)
+            value (#{provinceName},
+                   #{provinceEnglishName},
+                   #{province_zipCode},
+                   #{province_confirmedCount},
+                   #{province_suspectedCount},
+                   #{province_curedCount},
+                   #{province_deadCount}, #{cityName}, #{cityEnglishName},
+                   #{city_zipCode}, #{city_confirmedCount},
+                   #{city_suspectedCount}, #{city_curedCount}, #{city_deadCount}, #{updateTime})
+
+    </insert>
+</mapper>
